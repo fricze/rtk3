@@ -85,18 +85,29 @@ const PostList = () => {
       return;
     }
 
-    let message = error.message;
     if ("issues" in error) {
-      message = error.issues?.map(({ message }) => message).join("\n ") ?? "";
+      error.issues
+        ?.map(({ message }) => message)
+        .forEach((message) => {
+          toast({
+            title: "Data fetching error",
+            description: message,
+            status: "error",
+            duration: 2000,
+            isClosable: true,
+          });
+        });
     }
 
-    toast({
-      title: "Data fetching error",
-      description: message,
-      status: "error",
-      duration: 2000,
-      isClosable: true,
-    });
+    if ("message" in error && typeof error.message === "string") {
+      toast({
+        title: "Data fetching error",
+        description: error.message,
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    }
   }, [error, toast]);
 
   if (isLoading) {
