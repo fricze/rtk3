@@ -4,7 +4,11 @@ import z from "zod";
 
 const Post = z.object({
   id: z.string(),
-  name: z.string(),
+  name: z
+    .string({
+      required_error: "One of posts is missing title",
+    })
+    .min(10, { message: "Post title have to be 10 or more characters long." }),
 });
 const PostsResponse = z.array(Post);
 
@@ -12,13 +16,19 @@ export type Post = z.infer<typeof Post>;
 export type PostsResponse = z.infer<typeof PostsResponse>;
 
 export const api = createApi({
-  baseQuery: baseQueryWithZodValidation(fetchBaseQuery({ baseUrl: "/" })),
+  baseQuery: baseQueryWithZodValidation(
+    fetchBaseQuery({ baseUrl: "http://localhost:8000/" }),
+  ),
   tagTypes: ["Post"],
   endpoints: (build) => ({
     getPosts: build.query<PostsResponse, void>({
       query: () => "posts",
-      transformErrorResponse: (baseQueryReturnValue, meta, arg) => {
-        return baseQueryReturnValue;
+      transformErrorResponse: (error, meta, arg) => {
+        if (error.issues) {
+          return error;
+        }
+
+        return error;
       },
       providesTags: (result) =>
         result

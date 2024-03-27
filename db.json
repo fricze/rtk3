@@ -1,0 +1,12 @@
+{
+  "posts": [
+    {
+      "name": "Post about RTK Query!",
+      "id": "1"
+    },
+    {
+      "id": "2",
+      "name": "Post about Zod"
+    }
+  ]
+}

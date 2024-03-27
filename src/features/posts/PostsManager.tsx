@@ -15,9 +15,10 @@ import {
   Stat,
   StatLabel,
   StatNumber,
+  useToast,
 } from "@chakra-ui/react";
 import { MdBook } from "react-icons/md";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import {
   Post,
@@ -44,7 +45,7 @@ const AddPost = () => {
 
   return (
     <Flex p={5}>
-      <Box flex={10}>
+      <Box flex={10} pb={8}>
         <FormControl isInvalid={Boolean(post.name.length < 3 && post.name)}>
           <FormLabel htmlFor="name">Post name</FormLabel>
           <Input
@@ -56,7 +57,9 @@ const AddPost = () => {
           />
         </FormControl>
       </Box>
+
       <Spacer />
+
       <Box>
         <Button
           mt={8}
@@ -73,9 +76,28 @@ const AddPost = () => {
 
 const PostList = () => {
   const { data: posts, isLoading, error } = useGetPostsQuery();
-  console.log("data? ", posts);
-  console.log("error? ", error);
+  const toast = useToast();
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!error) {
+      return;
+    }
+
+    let message = error.message;
+    if ("issues" in error) {
+      message = error.issues?.map(({ message }) => message).join("\n ") ?? "";
+    }
+
+    toast({
+      title: "Data fetching error",
+      description: message,
+      status: "error",
+      duration: 2000,
+      isClosable: true,
+    });
+  }, [error, toast]);
 
   if (isLoading) {
     return <div>Loading</div>;
@@ -163,11 +185,13 @@ export const PostsManager = () => {
           <Box p={4} borderBottom="1px solid #eee">
             <Heading size="sm">Posts</Heading>
           </Box>
+
           <Box p={4}>
             <PostList />
           </Box>
-          <Box p={4} borderBottom="1px solid #eee">
-            <Heading size="sm">Posts (subscribed)</Heading>
+
+          <Box mt={8} p={4} borderBottom="1px solid #eee">
+            <Heading size="sm">Posts (optimistic updates)</Heading>
           </Box>
           <Box p={4}>
             <PostListSubscribed />

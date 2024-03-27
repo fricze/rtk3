@@ -9,7 +9,7 @@ import type {
 export type TBaseQuery = BaseQueryFn<
   string | FetchArgs,
   unknown,
-  FetchBaseQueryError,
+  FetchBaseQueryError & Partial<ZodError>,
   { dataSchema?: ZodSchema },
   FetchBaseQueryMeta
 >;
@@ -38,7 +38,10 @@ export const baseQueryWithZodValidation: (
         zodSchema.parse(data);
       } catch (error) {
         if (error instanceof ZodError) {
-          const issuesData = { issues: error.issues } as unknown as undefined;
+          const issuesData = {
+            issues: error.issues,
+            data: data,
+          } as unknown as undefined;
           return { error: issuesData, data };
         }
       }
