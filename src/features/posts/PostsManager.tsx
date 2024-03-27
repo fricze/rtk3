@@ -15,32 +15,32 @@ import {
   Stat,
   StatLabel,
   StatNumber,
-} from '@chakra-ui/react'
-import { MdBook } from 'react-icons/md'
-import React, { useState } from 'react'
-import { Route, Routes, useNavigate } from 'react-router-dom'
+} from "@chakra-ui/react";
+import { MdBook } from "react-icons/md";
+import React, { useState } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import {
   Post,
   useAddPostMutation,
   useGetPostQuery,
   useGetPostsQuery,
-} from '../../app/services/posts'
-import { PostDetail } from './PostDetail'
-import { v4 as uuid } from 'uuid'
+} from "../../app/services/posts";
+import { PostDetail } from "./PostDetail";
+import { v4 as uuid } from "uuid";
 
 const AddPost = () => {
-  const initialValue: Post = { id: uuid(), name: '' }
-  const [post, setPost] = useState(initialValue)
-  const [addPost, { isLoading }] = useAddPostMutation()
+  const initialValue: Post = { id: uuid(), name: "" };
+  const [post, setPost] = useState(initialValue);
+  const [addPost, { isLoading }] = useAddPostMutation();
 
   const handleChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     setPost((prev) => ({
       ...prev,
       [target.name]: target.value,
-    }))
-  }
+    }));
+  };
 
-  const handleAddPost = () => addPost(post).then(() => setPost(initialValue))
+  const handleAddPost = () => addPost(post).then(() => setPost(initialValue));
 
   return (
     <Flex p={5}>
@@ -68,19 +68,21 @@ const AddPost = () => {
         </Button>
       </Box>
     </Flex>
-  )
-}
+  );
+};
 
 const PostList = () => {
-  const { data: posts, isLoading } = useGetPostsQuery()
-  const navigate = useNavigate()
+  const { data: posts, isLoading, error } = useGetPostsQuery();
+  console.log("data? ", posts);
+  console.log("error? ", error);
+  const navigate = useNavigate();
 
   if (isLoading) {
-    return <div>Loading</div>
+    return <div>Loading</div>;
   }
 
   if (!posts) {
-    return <div>No posts :(</div>
+    return <div>No posts :(</div>;
   }
 
   return (
@@ -91,32 +93,32 @@ const PostList = () => {
         </ListItem>
       ))}
     </List>
-  )
-}
+  );
+};
 
 const PostNameSubscribed = ({ id }: { id: string }) => {
-  const { data, isFetching } = useGetPostQuery(id)
-  const navigate = useNavigate()
+  const { data, isFetching } = useGetPostQuery(id);
+  const navigate = useNavigate();
 
-  console.log('data', data, isFetching)
+  console.log("data", data, isFetching);
 
-  if (!data) return null
+  if (!data) return null;
 
   return (
     <ListItem key={id} onClick={() => navigate(`/posts/${id}`)}>
       <ListIcon as={MdBook} color="green.500" /> {data.name}
     </ListItem>
-  )
-}
+  );
+};
 const PostListSubscribed = () => {
-  const { data: posts, isLoading } = useGetPostsQuery()
+  const { data: posts, isLoading } = useGetPostsQuery();
 
   if (isLoading) {
-    return <div>Loading</div>
+    return <div>Loading</div>;
   }
 
   if (!posts) {
-    return <div>No posts :(</div>
+    return <div>No posts :(</div>;
   }
 
   return (
@@ -125,21 +127,21 @@ const PostListSubscribed = () => {
         <PostNameSubscribed id={id} key={id} />
       ))}
     </List>
-  )
-}
+  );
+};
 
 export const PostsCountStat = () => {
-  const { data: posts } = useGetPostsQuery()
+  const { data: posts } = useGetPostsQuery();
 
-  if (!posts) return null
+  if (!posts) return null;
 
   return (
     <Stat>
       <StatLabel>Active Posts</StatLabel>
       <StatNumber>{posts?.length}</StatNumber>
     </Stat>
-  )
-}
+  );
+};
 
 export const PostsManager = () => {
   return (
@@ -186,7 +188,7 @@ export const PostsManager = () => {
         </Box>
       </Flex>
     </Box>
-  )
-}
+  );
+};
 
-export default PostsManager
+export default PostsManager;

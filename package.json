@@ -6,7 +6,7 @@
   "keywords": [],
   "main": "./src/index.tsx",
   "dependencies": {
-    "@chakra-ui/react": "1.0.0",
+    "@chakra-ui/react": "2.8.2",
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
     "@mswjs/data": "^0.3.0",
@@ -19,12 +19,13 @@
     "react-redux": "^8.0.2",
     "react-router-dom": "6.3.0",
     "react-scripts": "5.0.1",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/react": "^18.0.5",
     "@types/react-dom": "^18.0.5",
-    "typescript": "~4.9",
+    "typescript": "^5.4.3",
     "whatwg-fetch": "^3.4.1"
   },
   "scripts": {
@@ -33,19 +34,21 @@
     "prebuild": "rm -rf dist/"
   },
   "eslintConfig": {
-    "extends": [
-      "react-app"
-    ],
+    "extends": ["react-app"],
     "rules": {
-      "react/react-in-jsx-scope": "off"
+      "react/react-in-jsx-scope": "off",
+      "no-redeclare": "off",
+      "@typescript-eslint/no-redeclare": "error",
+      "no-shadow": "off",
+      "@typescript-eslint/no-shadow": [
+        "error",
+        {
+          "ignoreTypeValueShadow": true
+        }
+      ]
     }
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
+  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"],
   "msw": {
     "workerDirectory": "public"
   }
