@@ -42,12 +42,7 @@
       "no-redeclare": "off",
       "@typescript-eslint/no-redeclare": "error",
       "no-shadow": "off",
-      "@typescript-eslint/no-shadow": [
-        "off",
-        {
-          "ignoreTypeValueShadow": true
-        }
-      ]
+      "@typescript-eslint/no-shadow": ["off"]
     }
   },
   "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"],

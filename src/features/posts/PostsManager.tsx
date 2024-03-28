@@ -5,6 +5,7 @@ import {
   Divider,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   Input,
@@ -20,6 +21,8 @@ import {
 import { MdBook } from "react-icons/md";
 import React, { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { Link } from "@chakra-ui/react";
+
 import {
   Post,
   useAddPostMutation,
@@ -28,11 +31,29 @@ import {
 } from "../../app/services/posts";
 import { PostDetail } from "./PostDetail";
 import { v4 as uuid } from "uuid";
+import { APIError } from "../../app/services/zod_query";
+import { SerializedError } from "@reduxjs/toolkit";
+
+const AddPostError = ({ error }: { error: APIError | SerializedError }) => {
+  if (typeof error === "string") {
+    return <FormErrorMessage>{error}</FormErrorMessage>;
+  }
+
+  if (typeof error === "object" && "issues" in error) {
+    return (
+      <Box>
+        {error.issues?.map(({ message }) => (
+          <FormErrorMessage>{message}</FormErrorMessage>
+        ))}
+      </Box>
+    );
+  }
+};
 
 const AddPost = () => {
   const initialValue: Post = { id: uuid(), name: "" };
   const [post, setPost] = useState(initialValue);
-  const [addPost, { isLoading }] = useAddPostMutation();
+  const [addPost, { isLoading, error, isError }] = useAddPostMutation();
 
   const handleChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     setPost((prev) => ({
@@ -41,12 +62,19 @@ const AddPost = () => {
     }));
   };
 
-  const handleAddPost = () => addPost(post).then(() => setPost(initialValue));
+  const handleAddPost = () =>
+    addPost(post).then((result) => {
+      if ("error" in result) {
+        return;
+      }
+
+      setPost(initialValue);
+    });
 
   return (
     <Flex p={5}>
       <Box flex={10} pb={8}>
-        <FormControl isInvalid={Boolean(post.name.length < 3 && post.name)}>
+        <FormControl isInvalid={isError}>
           <FormLabel htmlFor="name">Post name</FormLabel>
           <Input
             id="name"
@@ -55,6 +83,8 @@ const AddPost = () => {
             value={post.name}
             onChange={handleChange}
           />
+
+          {isError ? <AddPostError error={error} /> : null}
         </FormControl>
       </Box>
 
@@ -120,9 +150,14 @@ const PostList = () => {
 
   return (
     <List spacing={3}>
-      {posts.map(({ id, name }) => (
+      {posts.map(({ id, name, content, created }) => (
         <ListItem key={id} onClick={() => navigate(`/posts/${id}`)}>
-          <ListIcon as={MdBook} color="green.500" /> {name}
+          <Link>
+            <ListIcon as={MdBook} color="green.500" />
+            {name}
+            {created ? <p>Created: <i>{created}</i></p> : null}
+            {content ? <p>Excerpt: <i>{content}</i></p> : null}
+          </Link>
         </ListItem>
       ))}
     </List>
@@ -139,7 +174,10 @@ const PostNameSubscribed = ({ id }: { id: string }) => {
 
   return (
     <ListItem key={id} onClick={() => navigate(`/posts/${id}`)}>
-      <ListIcon as={MdBook} color="green.500" /> {data.name}
+      <Link>
+        <ListIcon as={MdBook} color="green.500" />
+        {data.name}
+      </Link>
     </ListItem>
   );
 };
@@ -180,48 +218,52 @@ export const PostsManager = () => {
   return (
     <Box>
       <Flex bg="#011627" p={4} color="white">
-        <Box>
+        <Flex width={"100vw"} maxWidth={"1200px"} margin={"0 auto"}>
           <Heading size="xl">Manage Posts</Heading>
-        </Box>
-        <Spacer />
-        <Box>
+          <Spacer />
           <PostsCountStat />
-        </Box>
+        </Flex>
       </Flex>
       <Divider />
-      <AddPost />
-      <Divider />
-      <Flex wrap="wrap">
-        <Box flex={1} borderRight="1px solid #eee">
-          <Box p={4} borderBottom="1px solid #eee">
-            <Heading size="sm">Posts</Heading>
-          </Box>
+      <Box maxWidth={"1200px"} margin={"0 auto"}>
+        <AddPost />
+        <Divider />
+        <Flex wrap="wrap">
+          <Box flex={1} borderRight="1px solid #eee">
+            <Box p={4} borderBottom="1px solid #eee">
+              <Heading
+                size="sm"
+                sx={{
+                  textDecoration: "underline",
+                  textDecorationColor: "#6f6f92",
+                  textDecorationThickness: "3px",
+                  textUnderlineOffset: "3px",
+                }}
+              >
+                Posts
+              </Heading>
+            </Box>
 
-          <Box p={4}>
-            <PostList />
-          </Box>
+            <Box p={4}>
+              <PostList />
+            </Box>
 
-          <Box mt={8} p={4} borderBottom="1px solid #eee">
-            <Heading size="sm">Posts (optimistic updates)</Heading>
           </Box>
-          <Box p={4}>
-            <PostListSubscribed />
+          <Box flex={2}>
+            <Routes>
+              <Route path="/posts/:id" element={<PostDetail />} />
+              <Route
+                path="*"
+                element={
+                  <Center h="200px">
+                    <Heading size="md">Select a post to edit!</Heading>
+                  </Center>
+                }
+              />
+            </Routes>
           </Box>
-        </Box>
-        <Box flex={2}>
-          <Routes>
-            <Route path="/posts/:id" element={<PostDetail />} />
-            <Route
-              path="*"
-              element={
-                <Center h="200px">
-                  <Heading size="md">Select a post to edit!</Heading>
-                </Center>
-              }
-            />
-          </Routes>
-        </Box>
-      </Flex>
+        </Flex>
+      </Box>
     </Box>
   );
 };

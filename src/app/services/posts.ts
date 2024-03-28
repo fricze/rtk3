@@ -6,30 +6,37 @@ const Post = z.object({
   id: z.string(),
   name: z
     .string({
-      required_error: "One of posts is missing title",
+      required_error: "Post is missing title",
     })
     .min(10, { message: "Post title have to be 10 or more characters long." }),
+  content: z
+    .string()
+    .optional(),
+  created: z.coerce
+    .date()
+    .transform((date) => date.toLocaleDateString())
+    .optional(),
 });
-const PostsResponse = z.array(Post);
+
+const PostWithExcerpt = Post.extend({
+  content: z
+    .string()
+    .transform((content) => content.substring(0, 30).concat("…"))
+    .optional(),
+});
+const PostsWithExcerptResponse = z.array(PostWithExcerpt);
 
 export type Post = z.infer<typeof Post>;
-export type PostsResponse = z.infer<typeof PostsResponse>;
+export type PostsWithExcerptResponse = z.infer<typeof PostsWithExcerptResponse>;
 
 export const api = createApi({
   baseQuery: baseQueryWithZodValidation(
-    fetchBaseQuery({ baseUrl: "http://localhost:8000/" }),
+    fetchBaseQuery({ baseUrl: "http://localhost:8000/" })
   ),
   tagTypes: ["Post"],
   endpoints: (build) => ({
-    getPosts: build.query<PostsResponse, void>({
+    getPosts: build.query<PostsWithExcerptResponse, void>({
       query: () => "posts",
-      transformErrorResponse: (error, meta, arg) => {
-        if (error.issues) {
-          return error;
-        }
-
-        return error;
-      },
       providesTags: (result) =>
         result
           ? [
@@ -38,7 +45,7 @@ export const api = createApi({
             ]
           : [{ type: "Post", id: "LIST" }],
       extraOptions: {
-        dataSchema: PostsResponse,
+        dataSchema: PostsWithExcerptResponse,
       },
     }),
     addPost: build.mutation<Post, Partial<Post>>({
@@ -48,10 +55,16 @@ export const api = createApi({
         body,
       }),
       invalidatesTags: [{ type: "Post", id: "LIST" }],
+      extraOptions: {
+        argsSchema: Post,
+      },
     }),
     getPost: build.query<Post, string>({
       query: (id) => `posts/${id}`,
       providesTags: (_result, _error, id) => [{ type: "Post", id }],
+      extraOptions: {
+        dataSchema: Post,
+      },
     }),
     updatePost: build.mutation<void, Pick<Post, "id"> & Partial<Post>>({
       query: ({ id, ...patch }) => ({
@@ -63,7 +76,7 @@ export const api = createApi({
         const patchResult = dispatch(
           api.util.updateQueryData("getPost", id, (draft) => {
             Object.assign(draft, patch);
-          }),
+          })
         );
         try {
           await queryFulfilled;

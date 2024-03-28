@@ -6,11 +6,13 @@ import type {
   FetchBaseQueryMeta,
 } from "@reduxjs/toolkit/query/react";
 
+export type APIError = FetchBaseQueryError & Partial<ZodError>;
+
 export type TBaseQuery = BaseQueryFn<
   string | FetchArgs,
   unknown,
-  FetchBaseQueryError & Partial<ZodError>,
-  { dataSchema?: ZodSchema },
+  APIError,
+  { dataSchema?: ZodSchema; argsSchema?: ZodSchema },
   FetchBaseQueryMeta
 >;
 
@@ -21,21 +23,36 @@ export type TBaseQuery = BaseQueryFn<
  * @returns A modified version of the baseQuery with added data validation.
  */
 export const baseQueryWithZodValidation: (
-  baseQuery: TBaseQuery,
+  baseQuery: TBaseQuery
 ) => TBaseQuery =
   (baseQuery: TBaseQuery) => async (args, api, extraOptions) => {
+    const zodArgsSchema = extraOptions?.argsSchema;
+
+    if (typeof args === "object" && "body" in args && zodArgsSchema) {
+      try {
+        zodArgsSchema.parse(args.body);
+      } catch (error) {
+        if (error instanceof ZodError) {
+          const issuesData = {
+            issues: error.issues,
+            data: args.body,
+          } as unknown as undefined;
+          return { error: issuesData, data: args.body };
+        }
+      }
+    }
     // Call the original baseQuery function with the provided arguments
     const returnValue = await baseQuery(args, api, extraOptions);
 
     // Retrieve the data schema from the extraOptions object
-    const zodSchema = extraOptions?.dataSchema;
+    const zodDataSchema = extraOptions?.dataSchema;
 
     const { data } = returnValue;
 
     // Check if both 'data' and 'zodSchema' are defined
-    if (data && zodSchema) {
+    if (data && zodDataSchema) {
       try {
-        zodSchema.parse(data);
+        return { ...returnValue, data: zodDataSchema.parse(data) };
       } catch (error) {
         if (error instanceof ZodError) {
           const issuesData = {

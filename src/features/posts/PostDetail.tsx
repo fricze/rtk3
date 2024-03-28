@@ -66,7 +66,7 @@ const PostJsonDetail = ({ id }: { id: string }) => {
 
   return (
     <Box mt={5} bg="#eee">
-      <pre>{JSON.stringify(post, null, 2)}</pre>
+      <pre style={{ textWrap: "pretty" }}>{JSON.stringify(post, null, 2)}</pre>
     </Box>
   );
 };
@@ -86,7 +86,11 @@ export const PostDetail = () => {
   const [deletePost, { isLoading: isDeleting }] = useDeletePostMutation();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <Box p={4}>
+        <div>Loading...</div>
+      </Box>
+    );
   }
 
   if (!post) {
@@ -100,7 +104,7 @@ export const PostDetail = () => {
   }
 
   return (
-    <Box p={4}>
+    <Box p={4} maxWidth={"100%"}>
       {isEditing ? (
         <EditablePostName
           name={post.name}

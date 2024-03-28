@@ -6,20 +6,25 @@ const middlewares = jsonServer.defaults();
 
 server.use((req, res, next) => {
   if (req.method === "PUT") {
-    if (Math.random() > 0.5) {
-      res.status(500).jsonp({ error: "Server timeout" });
-    }
+    // if (Math.random() > 0.5) {
+      // res.status(500).jsonp({ error: "Server timeout" });
+    // }
   }
 
   // Continue to JSON Server router
+  // next();
+
+  // setTimeout(() => {
+  //   next();
+  // }, 1000);
   next();
 });
 
-router.render = (req, res) => {
-  setTimeout(() => {
-    res.jsonp(res.locals.data);
-  }, 1000);
-};
+// router.render = (req, res) => {
+//   setTimeout(() => {
+//     res.jsonp(res.locals.data);
+//   }, 1000);
+// };
 
 server.use(middlewares);
 server.use(router);
