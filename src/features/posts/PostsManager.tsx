@@ -155,8 +155,16 @@ const PostList = () => {
           <Link>
             <ListIcon as={MdBook} color="green.500" />
             {name}
-            {created ? <p>Created: <i>{created}</i></p> : null}
-            {content ? <p>Excerpt: <i>{content}</i></p> : null}
+            {created ? (
+              <p>
+                Created: <i>{created}</i>
+              </p>
+            ) : null}
+            {content ? (
+              <p>
+                Excerpt: <i>{content}</i>
+              </p>
+            ) : null}
           </Link>
         </ListItem>
       ))}
@@ -247,7 +255,6 @@ export const PostsManager = () => {
             <Box p={4}>
               <PostList />
             </Box>
-
           </Box>
           <Box flex={2}>
             <Routes>

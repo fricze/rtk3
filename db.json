@@ -1,18 +1,17 @@
 {
   "posts": [
     {
-      "name": "Post about React 19. It's going to be revolutionary!",
-      "id": "f59a9730-000e-4cb9-8f16-00f639f37766",
-      "created": "2023-01-03"
+      "name": "Post about React 19. It's going to be revo!",
+      "id": "f59a9730-000e-4cb9-8f16-00f639f37766"
     },
     {
       "name": "Post about RTK Query!",
       "id": "e6ab219a-babf-43be-932b-e551e1f9163e"
     },
     {
-      "id": "3296a05f-6245-4f3d-9621-0fd426b415b3",
       "name": "Post about Zod",
-      "content": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
+      "content": "something new but waaaay longer! hello there",
+      "id": "3296a05f-6245-4f3d-9621-0fd426b415b3"
     },
     {
       "id": "17c4784a-16b1-4a18-9701-67dc77b01b76",

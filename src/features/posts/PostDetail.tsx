@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Textarea } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useDeletePostMutation,
@@ -20,22 +21,29 @@ import {
 
 const EditablePostName = ({
   name: initialName,
+  content: initialContent,
   onUpdate,
   onCancel,
   isLoading = false,
 }: {
   name: string;
-  onUpdate: (name: string) => void;
+  content: string;
+  onUpdate: (name: string, content: string) => void;
   onCancel: () => void;
   isLoading?: boolean;
 }) => {
   const [name, setName] = useState(initialName);
+  const [content, setContent] = useState(initialContent);
 
   const handleChange = ({
     target: { value },
   }: React.ChangeEvent<HTMLInputElement>) => setName(value);
 
-  const handleUpdate = () => onUpdate(name);
+  const handleContentChange = ({
+    target: { value },
+  }: React.ChangeEvent<HTMLTextAreaElement>) => setContent(value);
+
+  const handleUpdate = () => onUpdate(name, content);
   const handleCancel = () => onCancel();
 
   return (
@@ -47,6 +55,8 @@ const EditablePostName = ({
           value={name}
           disabled={isLoading}
         />
+
+        <Textarea value={content} onChange={handleContentChange} />
       </Box>
       <Spacer />
       <Box>
@@ -108,9 +118,10 @@ export const PostDetail = () => {
       {isEditing ? (
         <EditablePostName
           name={post.name}
-          onUpdate={async (name) => {
+          content={post.content || ""}
+          onUpdate={async (name, content) => {
             try {
-              await updatePost({ id, name }).unwrap();
+              await updatePost({ id, name, content }).unwrap();
             } catch {
               toast({
                 title: "An error occurred",

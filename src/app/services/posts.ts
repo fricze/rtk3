@@ -9,9 +9,7 @@ const Post = z.object({
       required_error: "Post is missing title",
     })
     .min(10, { message: "Post title have to be 10 or more characters long." }),
-  content: z
-    .string()
-    .optional(),
+  content: z.string().optional(),
   created: z.coerce
     .date()
     .transform((date) => date.toLocaleDateString())
@@ -31,7 +29,7 @@ export type PostsWithExcerptResponse = z.infer<typeof PostsWithExcerptResponse>;
 
 export const api = createApi({
   baseQuery: baseQueryWithZodValidation(
-    fetchBaseQuery({ baseUrl: "http://localhost:8000/" })
+    fetchBaseQuery({ baseUrl: "http://localhost:8000/" }),
   ),
   tagTypes: ["Post"],
   endpoints: (build) => ({
@@ -76,7 +74,7 @@ export const api = createApi({
         const patchResult = dispatch(
           api.util.updateQueryData("getPost", id, (draft) => {
             Object.assign(draft, patch);
-          })
+          }),
         );
         try {
           await queryFulfilled;
