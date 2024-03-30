@@ -71,10 +71,13 @@ const AddPost = () => {
   return (
     <div className="new-post">
       <FormControl isInvalid={isError} className="form-control">
-        <FormLabel htmlFor="name">New post</FormLabel>
+        <FormLabel htmlFor="name" className="form-label">
+          New post
+        </FormLabel>
         <Input
           id="name"
           name="name"
+          className="form-input"
           placeholder="Enter post name"
           value={post.name}
           onChange={handleChange}
@@ -83,7 +86,9 @@ const AddPost = () => {
         {isError ? <AddPostError error={error} /> : null}
       </FormControl>
 
-      <button onClick={handleAddPost}>Add Post</button>
+      <button onClick={handleAddPost} className="form-button">
+        Add Post
+      </button>
     </div>
   );
 };
