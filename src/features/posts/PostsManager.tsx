@@ -13,9 +13,6 @@ import {
   ListIcon,
   ListItem,
   Spacer,
-  Stat,
-  StatLabel,
-  StatNumber,
   useToast,
 } from "@chakra-ui/react";
 import { MdBook } from "react-icons/md";
@@ -72,10 +69,10 @@ const AddPost = () => {
     });
 
   return (
-    <Flex p={5}>
+    <div className="new-post">
       <Box flex={10} pb={8}>
         <FormControl isInvalid={isError}>
-          <FormLabel htmlFor="name">Post name</FormLabel>
+          <FormLabel htmlFor="name">New post</FormLabel>
           <Input
             id="name"
             name="name"
@@ -90,17 +87,8 @@ const AddPost = () => {
 
       <Spacer />
 
-      <Box>
-        <Button
-          mt={8}
-          colorScheme="purple"
-          isLoading={isLoading}
-          onClick={handleAddPost}
-        >
-          Add Post
-        </Button>
-      </Box>
-    </Flex>
+      <button onClick={handleAddPost}>Add Post</button>
+    </div>
   );
 };
 
@@ -215,10 +203,10 @@ export const PostsCountStat = () => {
   if (!posts) return null;
 
   return (
-    <Stat>
-      <StatLabel>Active Posts</StatLabel>
-      <StatNumber>{posts?.length}</StatNumber>
-    </Stat>
+    <div className="stats">
+      <h1>Active Posts</h1>
+      <p>{posts?.length}</p>
+    </div>
   );
 };
 
@@ -232,7 +220,9 @@ export const PostsManager = () => {
           <PostsCountStat />
         </Flex>
       </Flex>
+
       <Divider />
+
       <Box maxWidth={"1200px"} margin={"0 auto"}>
         <AddPost />
         <Divider />
