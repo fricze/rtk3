@@ -6,25 +6,21 @@ const middlewares = jsonServer.defaults();
 
 server.use((req, res, next) => {
   if (req.method === "PUT") {
+    // Fake fail for saving posts
     // if (Math.random() > 0.5) {
-      // res.status(500).jsonp({ error: "Server timeout" });
+    // res.status(500).jsonp({ error: "Server timeout" });
     // }
   }
 
   // Continue to JSON Server router
   // next();
 
+  // Fake delay for server data
   // setTimeout(() => {
   //   next();
   // }, 1000);
   next();
 });
-
-// router.render = (req, res) => {
-//   setTimeout(() => {
-//     res.jsonp(res.locals.data);
-//   }, 1000);
-// };
 
 server.use(middlewares);
 server.use(router);
