@@ -8,7 +8,10 @@ const Post = z.object({
     .string({
       required_error: "Post is missing title",
     })
-    .min(10, { message: "Post title have to be 10 or more characters long." }),
+    .min(10, { message: "Post title have to be 10 or more characters long." })
+    .refine((title) => title[0].toUpperCase() === title[0], {
+      message: "First letter of post title have to be uppercase",
+    }),
   content: z.string().optional(),
   created: z.coerce
     .date()

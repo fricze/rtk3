@@ -38,11 +38,11 @@ const AddPostError = ({ error }: { error: APIError | SerializedError }) => {
 
   if (typeof error === "object" && "issues" in error) {
     return (
-      <Box>
+      <>
         {error.issues?.map(({ message }) => (
-          <FormErrorMessage>{message}</FormErrorMessage>
+          <FormErrorMessage className="error">{message}</FormErrorMessage>
         ))}
-      </Box>
+      </>
     );
   }
 };
@@ -70,22 +70,18 @@ const AddPost = () => {
 
   return (
     <div className="new-post">
-      <Box flex={10} pb={8}>
-        <FormControl isInvalid={isError}>
-          <FormLabel htmlFor="name">New post</FormLabel>
-          <Input
-            id="name"
-            name="name"
-            placeholder="Enter post name"
-            value={post.name}
-            onChange={handleChange}
-          />
+      <FormControl isInvalid={isError} className="form-control">
+        <FormLabel htmlFor="name">New post</FormLabel>
+        <Input
+          id="name"
+          name="name"
+          placeholder="Enter post name"
+          value={post.name}
+          onChange={handleChange}
+        />
 
-          {isError ? <AddPostError error={error} /> : null}
-        </FormControl>
-      </Box>
-
-      <Spacer />
+        {isError ? <AddPostError error={error} /> : null}
+      </FormControl>
 
       <button onClick={handleAddPost}>Add Post</button>
     </div>
