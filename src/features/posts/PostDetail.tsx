@@ -25,12 +25,14 @@ const EditablePostName = ({
   onUpdate,
   onCancel,
   isLoading = false,
+  open = false,
 }: {
   name: string;
   content: string;
   onUpdate: (name: string, content: string) => void;
   onCancel: () => void;
   isLoading?: boolean;
+  open?: boolean;
 }) => {
   const [name, setName] = useState(initialName);
   const [content, setContent] = useState(initialContent);
@@ -46,8 +48,10 @@ const EditablePostName = ({
   const handleUpdate = () => onUpdate(name, content);
   const handleCancel = () => onCancel();
 
+  const inertProps = !open ? { inert: "" } : {};
+
   return (
-    <div className="edit-form">
+    <div className={`edit-form ${!open ? "hidden" : ""}`} {...inertProps}>
       <div className="inputs">
         <Input
           type="text"
@@ -115,29 +119,30 @@ export const PostDetail = () => {
 
   return (
     <Box p={4} maxWidth={"100%"}>
-      {isEditing ? (
-        <EditablePostName
-          name={post.name}
-          content={post.content || ""}
-          onUpdate={async (name, content) => {
-            try {
-              await updatePost({ id, name, content }).unwrap();
-            } catch {
-              toast({
-                title: "An error occurred",
-                description: "We couldn't save your changes, try again!",
-                status: "error",
-                duration: 2000,
-                isClosable: true,
-              });
-            } finally {
-              setIsEditing(false);
-            }
-          }}
-          onCancel={() => setIsEditing(false)}
-          isLoading={isUpdating}
-        />
-      ) : (
+      <EditablePostName
+        name={post.name}
+        content={post.content || ""}
+        onUpdate={async (name, content) => {
+          try {
+            await updatePost({ id, name, content }).unwrap();
+          } catch {
+            toast({
+              title: "An error occurred",
+              description: "We couldn't save your changes, try again!",
+              status: "error",
+              duration: 2000,
+              isClosable: true,
+            });
+          } finally {
+            setIsEditing(false);
+          }
+        }}
+        onCancel={() => setIsEditing(false)}
+        isLoading={isUpdating}
+        open={isEditing}
+      />
+
+      {!isEditing ? (
         <Flex>
           <Box>
             <Heading size="md">{post.name}</Heading>
@@ -161,7 +166,7 @@ export const PostDetail = () => {
             </Stack>
           </Box>
         </Flex>
-      )}
+      ) : null}
       <PostJsonDetail id={post.id} />
     </Box>
   );
