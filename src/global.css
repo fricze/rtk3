@@ -31,6 +31,13 @@ input[type="submit"] {
     }
 }
 
+@starting-style {
+    .new-post .error {
+        opacity: 0;
+        scale: 1 0;
+    }
+}
+
 .new-post {
     line-height: 24px;
     display: grid;
@@ -49,6 +56,14 @@ input[type="submit"] {
         margin: 0;
         padding: 0;
         height: 1lh;
+
+        opacity: 1;
+        scale: 1 1;
+
+        transition:
+            opacity 0.7s,
+            scale 0.7s,
+            display 0.7s allow-discrete;
     }
 
     .form-label {

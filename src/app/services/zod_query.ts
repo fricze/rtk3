@@ -23,7 +23,7 @@ export type TBaseQuery = BaseQueryFn<
  * @returns A modified version of the baseQuery with added data validation.
  */
 export const baseQueryWithZodValidation: (
-  baseQuery: TBaseQuery
+  baseQuery: TBaseQuery,
 ) => TBaseQuery =
   (baseQuery: TBaseQuery) => async (args, api, extraOptions) => {
     const zodArgsSchema = extraOptions?.argsSchema;
@@ -55,6 +55,8 @@ export const baseQueryWithZodValidation: (
         return { ...returnValue, data: zodDataSchema.parse(data) };
       } catch (error) {
         if (error instanceof ZodError) {
+          console.log(data);
+          console.log(error);
           const issuesData = {
             issues: error.issues,
             data: data,

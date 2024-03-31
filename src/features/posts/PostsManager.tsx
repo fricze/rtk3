@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Center,
   Divider,
   Flex,
@@ -40,7 +39,9 @@ const AddPostError = ({ error }: { error: APIError | SerializedError }) => {
     return (
       <>
         {error.issues?.map(({ message }) => (
-          <FormErrorMessage className="error">{message}</FormErrorMessage>
+          <FormErrorMessage key={message} className="error">
+            {message}
+          </FormErrorMessage>
         ))}
       </>
     );
@@ -50,9 +51,13 @@ const AddPostError = ({ error }: { error: APIError | SerializedError }) => {
 const AddPost = () => {
   const initialValue: Post = { id: uuid(), name: "" };
   const [post, setPost] = useState(initialValue);
-  const [addPost, { isLoading, error, isError }] = useAddPostMutation();
+  const [addPost, { reset, error, isError }] = useAddPostMutation();
 
   const handleChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    if (isError) {
+      reset();
+    }
+
     setPost((prev) => ({
       ...prev,
       [target.name]: target.value,
