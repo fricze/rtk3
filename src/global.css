@@ -31,10 +31,13 @@ input[type="submit"] {
     }
 }
 
-@starting-style {
-    .new-post .error {
+@keyframes fade-in {
+    0% {
         opacity: 0;
-        scale: 1 0;
+    }
+
+    100% {
+        opacity: 1;
     }
 }
 
@@ -57,15 +60,19 @@ input[type="submit"] {
         padding: 0;
         height: 1lh;
 
-        opacity: 1;
-        scale: 1 1;
-
-        transition:
-            opacity 0.7s,
-            scale 0.7s,
-            display 0.7s allow-discrete;
+        animation: fade-in 0.3s forwards;
     }
 
+    /* seems like Safari doesn't support CSS nesting with HTML elements.
+    this doesn't work in Safari:
+    .new-post {
+      label {…}
+    }
+    this works:
+    .new-post {
+      .form-label {…}
+    }
+    */
     .form-label {
         grid-row: 1;
         grid-column: 1;

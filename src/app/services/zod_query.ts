@@ -55,8 +55,6 @@ export const baseQueryWithZodValidation: (
         return { ...returnValue, data: zodDataSchema.parse(data) };
       } catch (error) {
         if (error instanceof ZodError) {
-          console.log(data);
-          console.log(error);
           const issuesData = {
             issues: error.issues,
             data: data,
