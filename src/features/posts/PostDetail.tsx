@@ -47,8 +47,8 @@ const EditablePostName = ({
   const handleCancel = () => onCancel();
 
   return (
-    <Flex>
-      <Box flex={10}>
+    <div className="edit-form">
+      <div className="inputs">
         <Input
           type="text"
           onChange={handleChange}
@@ -57,8 +57,8 @@ const EditablePostName = ({
         />
 
         <Textarea value={content} onChange={handleContentChange} />
-      </Box>
-      <Spacer />
+      </div>
+
       <Box>
         <Stack spacing={4} direction="row" align="center">
           <Button onClick={handleUpdate} isLoading={isLoading}>
@@ -67,7 +67,7 @@ const EditablePostName = ({
           <CloseButton bg="red" onClick={handleCancel} disabled={isLoading} />
         </Stack>
       </Box>
-    </Flex>
+    </div>
   );
 };
 
